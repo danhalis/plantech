@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:PlanTech.ViewModels"
+             xmlns:plantech="clr-namespace:PlanTech"
+             x:DataType="viewModels:MainViewModel"
+             x:Class="PlanTech.Views.ContainerListPage"
+             x:Name="page"
+             Title="Containers">
+    <ContentPage.Content>
+        <StackLayout>
+            <!--<SearchBar Placeholder="Enter search keyword..."/>-->
+            <FlexLayout BackgroundColor="#FF3E35" JustifyContent="Center" AlignItems="Center"
+                             Padding="0,10">
+                <FlexLayout.Triggers>
+                    <DataTrigger TargetType="FlexLayout" Binding="{Binding HasInternetConnection}" Value="True">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </FlexLayout.Triggers>
+                
+                <Label Text="No Internet Connection" TextColor="White" FontSize="Medium" FontAttributes="Bold"/>
+                <Image Source="no_internet" Scale="0.7"/>
+            </FlexLayout>
+
+            <CollectionView x:Name="collectionView" ItemsSource="{Binding Containers}"
+                        EmptyView="No Containers Available"
+                        Margin="10"
+                        SelectionMode="Single"
+                        SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:Reference collectionView}}"
+                        SelectionChangedCommand="{Binding OnContainerSelectedCommand}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout
+                         Orientation="Vertical" 
+                         VerticalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:ContainerViewModel">
+                        <Frame HasShadow="False" Padding="0"
+                               CornerRadius="30" 
+                               OutlineColor="Black" BackgroundColor="{Binding Source={RelativeSource Self}, Path=OutlineColor}">
+                            <Frame BorderColor="Black" CornerRadius="30" Margin="2">
+                                <Frame.Triggers>
+                                    <MultiTrigger TargetType="Frame">
+                                        <MultiTrigger.Conditions>
+                                            <!--If the current user is a fleet manager and the container is in alarming state-->
+                                            <BindingCondition Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FleetManager}"/>
+                                            <BindingCondition Binding="{Binding IsAlarming}" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="BackgroundColor" Value="Red"/>
+                                    </MultiTrigger>
+                                    <MultiTrigger TargetType="Frame">
+                                        <MultiTrigger.Conditions>
+                                            <!--If the current user is a farm technician and the container is in warning state-->
+                                            <BindingCondition Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FarmTechnician}"/>
+                                            <BindingCondition Binding="{Binding IsWarning}" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="BackgroundColor" Value="Yellow"/>
+                                    </MultiTrigger>
+                                </Frame.Triggers>
+                                <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
+                                    <AbsoluteLayout>
+                                        <!--Name-->
+                                        <Label Text="{Binding Name}" TextColor="Black" FontSize="Large" FontAttributes="Bold" LineBreakMode="TailTruncation"
+                                               Margin="0,0,0,5" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,0.3"/>
+                                        
+                                        <!--Location-->
+                                        <Label Text="{Binding Location, TargetNullValue='Unlocated'}" FontSize="Medium" FontAttributes="Bold,Italic" LineBreakMode="TailTruncation"
+                                               AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0.45,1,0.3"/>
+                                        
+                                        <!--Rental Status-->
+                                        <Frame HasShadow="False" Padding="0"
+                                               CornerRadius="15" 
+                                               AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,1">
+                                            <Frame.Triggers>
+                                                <!--If the current user is a farm technician-->
+                                                <DataTrigger TargetType="Frame" Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FarmTechnician}">
+                                                    <!--Hide rental status-->
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                                <MultiTrigger TargetType="Frame">
+                                                    <MultiTrigger.Conditions>
+                                                        <!--If the current user is a fleet manager and the container is rented-->
+                                                        <BindingCondition Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FleetManager}"/>
+                                                        <BindingCondition Binding="{Binding IsRented}" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="BackgroundColor" Value="Orange"/>
+                                                </MultiTrigger>
+                                                <MultiTrigger TargetType="Frame">
+                                                    <MultiTrigger.Conditions>
+                                                        <!--If the current user is a fleet manager and the container is rented-->
+                                                        <BindingCondition Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FleetManager}"/>
+                                                        <BindingCondition Binding="{Binding IsRented}" Value="False"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="BackgroundColor" Value="Green"/>
+                                                </MultiTrigger>
+                                            </Frame.Triggers>
+                                            <Frame Margin="4" Padding="4" CornerRadius="10">
+                                                <Frame.Triggers>
+                                                    <DataTrigger TargetType="Frame" Binding="{Binding IsRented}" Value="True">
+                                                        <Setter Property="BorderColor" Value="Orange"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Frame" Binding="{Binding IsRented}" Value="False">
+                                                        <Setter Property="BorderColor" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Frame.Triggers>
+                                                <Label FontAttributes="Bold">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding IsRented}" Value="True">
+                                                            <Setter Property="Text" Value="RENTED"/>
+                                                            <Setter Property="TextColor" Value="Orange"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding IsRented}" Value="False">
+                                                            <Setter Property="Text" Value="AVAILABLE"/>
+                                                            <Setter Property="TextColor" Value="Green"/>
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </Frame>
+                                        </Frame>
+                                    </AbsoluteLayout>
+                                    <StackLayout>
+                                        <Image Source="alarming">
+                                            <Image.Triggers>
+                                                <!--If the current user is a farm technician-->
+                                                <DataTrigger TargetType="Image" Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FarmTechnician}">
+                                                    <!--Hide alarming icon-->
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                                <MultiTrigger TargetType="Image">
+                                                    <!--If the current user is a fleet manager and the container is not in alarming state-->
+                                                    <MultiTrigger.Conditions>
+                                                        <BindingCondition Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FleetManager}"/>
+                                                        <BindingCondition Binding="{Binding IsAlarming}" Value="False"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <!--Hide alarming icon-->
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </MultiTrigger>
+                                            </Image.Triggers>
+                                        </Image>
+                                        <Image Source="warning">
+                                            <Image.Triggers>
+                                                <!--If the current user is a fleet manager-->
+                                                <DataTrigger TargetType="Image" Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FleetManager}">
+                                                    <!--Hide warning icon-->
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                                <MultiTrigger TargetType="Image">
+                                                    <!--If the current user is a farm technician and the container is not in warning state-->
+                                                    <MultiTrigger.Conditions>
+                                                        <BindingCondition Binding="{Binding Source={x:Reference page}, Path=BindingContext.CurrentUserRole}" Value="{x:Static plantech:UserRoles.FarmTechnician}"/>
+                                                        <BindingCondition Binding="{Binding IsWarning}" Value="False"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <!--Hide warning icon-->
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </MultiTrigger>
+                                            </Image.Triggers>
+                                        </Image>
+                                    </StackLayout>
+                                </FlexLayout>
+                            </Frame>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

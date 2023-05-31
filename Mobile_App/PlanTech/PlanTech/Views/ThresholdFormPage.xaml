@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PlanTech.Views.ThresholdFormPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:plantech="clr-namespace:PlanTech"
+             xmlns:viewmodels="clr-namespace:PlanTech.ViewModels" x:DataType="viewmodels:MainViewModel"
+             Title="Dashboard Settings"
+             >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveThresholdCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior x:Name="backBehavior" Command="{Binding DashboardSettingBackCommand}"/>
+    </Shell.BackButtonBehavior>
+    
+
+    <ContentPage.Content>
+        <StackLayout>
+            <TableView Intent="Settings" HasUnevenRows="True">
+                <TableView.Triggers>
+                    <DataTrigger TargetType="TableView" Binding="{Binding CurrentUserRole}" Value="{x:Static plantech:UserRoles.FleetManager}">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </TableView.Triggers>
+                <TableRoot>
+                    <TableSection Title="Sensor Threshold">
+                        
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Water Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference waterlowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.WaterLevelLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="waterlowValidation" IsValid="{Binding DashboardSettingViewModel.IsWaterLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.WaterLevelHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high water level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+                        
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Water Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference waterhighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.WaterLevelHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="waterhighValidation" IsValid="{Binding DashboardSettingViewModel.IsWaterHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.WaterLevelLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low water level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Soil Moisture Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference soilMoistureLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.SoilMoistureLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="soilMoistureLowValidation" IsValid="{Binding DashboardSettingViewModel.IsSoilMoistureLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.SoilMoistureHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high soil moisture level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Soil Moisture Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference soilMoistureHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.SoilMoistureHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="soilMoistureHighValidation" IsValid="{Binding DashboardSettingViewModel.IsSoilMoistureHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.SoilMoistureLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low soil moisture level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Temperature Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference temperatureLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.TemperatureLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="temperatureLowValidation" IsValid="{Binding DashboardSettingViewModel.IsTempLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.TemperatureHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high temperature level"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Temperature Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference temperatureHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.TemperatureHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="temperatureHighValidation" IsValid="{Binding DashboardSettingViewModel.IsTempHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.TemperatureLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low temperature level"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Humidity Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference humidityLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.HumidityLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="humidityLowValidation" IsValid="{Binding DashboardSettingViewModel.IsHumiLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.HumidityHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high humidity level"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Humidity Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference humidityHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.HumidityHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="humidityHighValidation" IsValid="{Binding DashboardSettingViewModel.IsHumiHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.HumidityLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low humidity level"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+
+
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+            <TableView Intent="Settings" HasUnevenRows="True">
+                <TableView.Triggers>
+                    <DataTrigger TargetType="TableView" Binding="{Binding CurrentUserRole}" Value="{x:Static plantech:UserRoles.FarmTechnician}">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </TableView.Triggers>
+                <TableRoot>
+                    <TableSection Title="Sensor Threshold">
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Vibration Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference vibrationLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.VibrationLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="vibrationLowValidation" IsValid="{Binding DashboardSettingViewModel.IsVibrationLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.VibrationHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high vibration level"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Vibration Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference vibrationHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.VibrationHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="vibrationHighValidation" IsValid="{Binding DashboardSettingViewModel.IsVibrationHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.VibrationLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low vibration level"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Noise Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference noiseLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.NoiseLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="noiseLowValidation" IsValid="{Binding DashboardSettingViewModel.IsNoiseLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.NoiseHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high noise level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Noise Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference noiseHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.NoiseHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="noiseHighValidation" IsValid="{Binding DashboardSettingViewModel.IsNoiseHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.NoiseLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low noise level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Luminosity Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference luminosityLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.LuminosityLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="luminosityLowValidation" IsValid="{Binding DashboardSettingViewModel.IsLuminosityLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.LuminosityHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high luminosity level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Luminosity Level"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference luminosityHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.LuminosityHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="luminosityHighValidation" IsValid="{Binding DashboardSettingViewModel.IsLuminoistyHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.LuminosityLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low luminosity level"/>
+                                            <xct:NumericValidationBehavior MaximumDecimalPlaces="0" xct:MultiValidationBehavior.Error="Value must be an integer"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Pitch Angle Value"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference pitchLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.PitchAngleLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="pitchLowValidation" IsValid="{Binding DashboardSettingViewModel.IsPitchAngleLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.PitchAngleHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high pitch angle value"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Pitch Angle Value"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference pitchHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.PitchAngleHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="pitchHighValidation" IsValid="{Binding DashboardSettingViewModel.IsPitchAngleHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.PitchAngleLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low pitch angle value"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="Low Roll Angle Value"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference rollLowValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.RollAngleLow}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="rollLowValidation" IsValid="{Binding DashboardSettingViewModel.IsRollAngleLowValid}">
+                                            <xct:NumericValidationBehavior MaximumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.RollAngleHigh}" xct:MultiValidationBehavior.Error="Value must be less than the high roll angle value"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="High Roll Angle Value"/>
+                                <Label Text="{Binding Errors[0], Source={x:Reference rollHighValidation}}" HorizontalOptions="Start" TextColor="Red" FontSize="Micro"/>
+                                <Editor Text="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.RollAngleHigh}" >
+                                    <Editor.Behaviors>
+                                        <xct:MultiValidationBehavior x:Name="rollHighValidation" IsValid="{Binding DashboardSettingViewModel.IsRollAngleHighValid}">
+                                            <xct:NumericValidationBehavior MinimumValue="{Binding DashboardSettingViewModel.SettingSelectedContainerViewModel.RollAngleLow}" xct:MultiValidationBehavior.Error="Value must be greater than the low roll angle value"/>
+                                        </xct:MultiValidationBehavior>
+                                    </Editor.Behaviors>
+                                </Editor>
+                            </StackLayout>
+                        </ViewCell>
+
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

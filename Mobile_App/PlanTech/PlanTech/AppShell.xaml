@@ -1,0 +1,18 @@
+﻿<Shell xmlns="http://xamarin.com/schemas/2014/forms"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:PlanTech.Views"
+       FlyoutWidth="200"
+       x:Class="PlanTech.AppShell">
+
+    <FlyoutItem Title="Containers" Icon="list">
+        <ShellContent ContentTemplate="{DataTemplate views:ContainerListPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Compare" Icon="compare">
+        <ShellContent ContentTemplate="{DataTemplate views:ComparisonPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Log out" Icon="logout">
+        <ShellContent ContentTemplate="{DataTemplate views:RoleSelectionPage}"/>
+    </FlyoutItem>
+</Shell>

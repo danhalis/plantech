@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms" 
+             x:Class="PlanTech.Views.MultiChartPage"
+             Title="{Binding PageTitle}">
+    <ContentPage.Content>
+        <StackLayout>
+            <FlexLayout BackgroundColor="#FF3E35" JustifyContent="Center" AlignItems="Center"
+                             Padding="0,10">
+                <FlexLayout.Triggers>
+                    <DataTrigger TargetType="FlexLayout" Binding="{Binding HasInternetConnection}" Value="True">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </FlexLayout.Triggers>
+
+                <Label Text="No Internet Connection" TextColor="White" FontSize="Medium" FontAttributes="Bold"/>
+                <Image Source="no_internet" Scale="0.7"/>
+            </FlexLayout>
+            
+            <Label Text="{Binding Headers[0]}" HorizontalOptions="Center" Padding="0,30,0,0" FontAttributes="Bold"/>
+            <Label Margin="0,75,0,0" HorizontalOptions="Center" FontSize="Caption">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding IsEmpty[0]}" Value="true">
+                        <Setter Property="Text" Value="No data available"/>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <microcharts:ChartView Chart="{Binding Charts[0]}" HeightRequest="250" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Margin="0,-100,0,0"/>
+
+            <Label Text="{Binding Headers[1]}" HorizontalOptions="Center" Margin="0,0,0,0" FontAttributes="Bold"/>
+            <Label Margin="0,75,0,0" HorizontalOptions="Center" FontSize="Caption">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding IsEmpty[1]}" Value="true">
+                        <Setter Property="Text" Value="No data available"/>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <microcharts:ChartView Chart="{Binding Charts[1]}" HeightRequest="250" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Margin="0,-100,0,0"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

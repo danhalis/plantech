@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewmodels="clr-namespace:PlanTech.ViewModels" x:DataType="viewmodels:MainViewModel"
+             x:Class="PlanTech.FarmDashboardPage"
+             x:Name="page"
+             Title="Dashboard">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding Source={x:Reference page}, Path=OnBackButtonPressedCommand, Mode=TwoWay}"/>
+    </Shell.BackButtonBehavior>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Share" IconImageSource="share30" Command="{Binding ShareContainerCommand}" CommandParameter="{Binding SelectedContainerViewModel.Container}"/>
+        <ToolbarItem Text="Setting" IconImageSource="settings30" Command="{Binding ThresholdSettingCommand}"/>
+    </ContentPage.ToolbarItems>
+  
+    <ContentPage.Content>
+        <StackLayout>
+            <FlexLayout BackgroundColor="#FF3E35" JustifyContent="Center" AlignItems="Center"
+                             Padding="0,10">
+                <FlexLayout.Triggers>
+                    <DataTrigger TargetType="FlexLayout" Binding="{Binding HasInternetConnection}" Value="True">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </FlexLayout.Triggers>
+                
+                <Label Text="No Internet Connection" TextColor="White" FontSize="Medium" FontAttributes="Bold"/>
+                <Image Source="no_internet" Scale="0.7"/>
+            </FlexLayout>
+
+            <ScrollView>
+                <StackLayout Padding="15">
+                    <Label Text="{Binding SelectedContainerViewModel.Name, TargetNullValue='Unnamed'}" FontSize="Large"/>
+                    <Label Text="{Binding SelectedContainerViewModel.Location, TargetNullValue='Unlocated'}" FontSize="Small"/>
+
+                    <Grid Padding="0, 20, 0, 20" RowSpacing="15" ColumnSpacing="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="150"/>
+                        </Grid.RowDefinitions>
+
+
+                        <Frame Grid.Column="0" Grid.Row="0"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.TemperaturePage}"/>
+                            </Frame.GestureRecognizers>
+
+                            <StackLayout>
+                                <Image Source="temperature32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Temperature" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding SelectedContainerViewModel.Temperature, TargetNullValue='N/A', StringFormat='{0}°C'}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label Text="Humidity" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Start"/>
+                                    <Label Text="45" Grid.Row="1" Grid.Column="1" VerticalTextAlignment="Start">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding SelectedContainerViewModel.Humidity, TargetNullValue='N/A'}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                        <Frame Grid.Column="1" Grid.Row="0"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.WaterPage}"/>
+                            </Frame.GestureRecognizers>
+                            <StackLayout>
+                                <Image Source="water32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Water level" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.WaterLevel, TargetNullValue='N/A'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End">
+                                    </Label>
+                                    <Image Source="nosignal48" Grid.Row="1" Grid.ColumnSpan="2">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.WaterLevelSignal}" Value="{x:Static viewmodels:Signal.Low}">
+                                                <Setter Property="Source" Value="lowsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.WaterLevelSignal}" Value="{x:Static viewmodels:Signal.Medium}">
+                                                <Setter Property="Source" Value="medsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.WaterLevelSignal}" Value="{x:Static viewmodels:Signal.High}">
+                                                <Setter Property="Source" Value="highsignal48"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                        <Frame Grid.Column="0" Grid.Row="1"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.MoisturePage}"/>
+                            </Frame.GestureRecognizers>
+                            <StackLayout>
+                                <Image Source="moisture32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Soil moisture" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.SoilMoisture, TargetNullValue='N/A'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End"/>
+                                    <Image Source="nosignal48" Grid.Row="1" Grid.ColumnSpan="2">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.SoilMoistureSignal}" Value="{x:Static viewmodels:Signal.Low}">
+                                                <Setter Property="Source" Value="lowsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.SoilMoistureSignal}" Value="{x:Static viewmodels:Signal.Medium}">
+                                                <Setter Property="Source" Value="medsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.SoilMoistureSignal}" Value="{x:Static viewmodels:Signal.High}">
+                                                <Setter Property="Source" Value="highsignal48"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+
+                                </Grid>
+                            </StackLayout>
+
+                        </Frame>
+                        <Frame Grid.Column="1" Grid.Row="1"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+
+                            <StackLayout VerticalOptions="FillAndExpand">
+                                <FlexLayout JustifyContent="SpaceBetween" Margin="0,0,0,-15">
+                                    <Image Source="fan32" HorizontalOptions="Start"/>
+                                    <ActivityIndicator IsRunning="{Binding SelectedContainerViewModel.IsUpdatingFanState}" Scale="0.5"/>
+                                </FlexLayout>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Fan" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center"/>
+                                    <Switch Grid.Row="0" Grid.Column="1" VerticalOptions="CenterAndExpand" IsToggled="{Binding SelectedContainerViewModel.FanIsOn}"/>
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                        <Frame Grid.Column="0" Grid.Row="2"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <StackLayout VerticalOptions="FillAndExpand">
+                                <FlexLayout JustifyContent="SpaceBetween" Margin="0,0,0,-15">
+                                    <Image Source="light32" HorizontalOptions="Start"/>
+                                    <ActivityIndicator IsRunning="{Binding SelectedContainerViewModel.IsUpdatingLightState}" Scale="0.5"/>
+                                </FlexLayout>
+                                
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="LED" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center"/>
+                                    <Switch Grid.Row="0" Grid.Column="1" VerticalOptions="CenterAndExpand" IsToggled="{Binding SelectedContainerViewModel.LightsAreOn}"/>
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+
+
+                    </Grid>
+
+                </StackLayout>
+
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewmodels="clr-namespace:PlanTech.ViewModels" x:DataType="viewmodels:MainViewModel"
+             x:Class="PlanTech.FleetmanagerDashboardPage"
+             x:Name="page"
+             Title="Dashboard">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding Source={x:Reference page}, Path=OnBackButtonPressedCommand, Mode=TwoWay}"/>
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Share" IconImageSource="share30" Command="{Binding ShareContainerCommand}" CommandParameter="{Binding SelectedContainerViewModel.Container}"/>
+        <ToolbarItem Text="Setting" IconImageSource="settings30" Command="{Binding ThresholdSettingCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <FlexLayout BackgroundColor="#FF3E35" JustifyContent="Center" AlignItems="Center"
+                             Padding="0,10">
+                <FlexLayout.Triggers>
+                    <DataTrigger TargetType="FlexLayout" Binding="{Binding HasInternetConnection}" Value="True">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </FlexLayout.Triggers>
+
+                <Label Text="No Internet Connection" TextColor="White" FontSize="Medium" FontAttributes="Bold"/>
+                <Image Source="no_internet" Scale="0.7"/>
+            </FlexLayout>
+
+            <ScrollView>
+                <StackLayout AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0, 0" Padding="15">
+                    <Label Text="{Binding SelectedContainerViewModel.Name, TargetNullValue='Unnamed'}" FontSize="Large"/>
+                    <Label Text="{Binding SelectedContainerViewModel.Location, TargetNullValue='Unlocated'}" FontSize="Small"/>
+
+                    <Grid Padding="0, 20, 0, 20" RowSpacing="15" ColumnSpacing="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="150"/>
+                        </Grid.RowDefinitions>
+
+
+                        <Frame Grid.Column="0" Grid.Row="0"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.AnglesPage}"/>
+                            </Frame.GestureRecognizers>
+
+                            <StackLayout>
+                                <Image Source="angle32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Pitch" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.PitchAngle, TargetNullValue='N/A', StringFormat='{0}°'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End" />
+                                    <Label Text="Roll" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Start"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.RollAngle, TargetNullValue='N/A', StringFormat='{0}°'}" Grid.Row="1" Grid.Column="1" VerticalTextAlignment="Start"/>
+
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                        <Frame Grid.Column="1" Grid.Row="0"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.VibrationPage}"/>
+                            </Frame.GestureRecognizers>
+                            <StackLayout>
+                                <Image Source="vibration32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Vibration" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.Vibration, TargetNullValue='N/A'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End"/>
+                                    <Image Source="nosignal48" Grid.Row="1" Grid.ColumnSpan="2">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.VibrationSignal}" Value="{x:Static  viewmodels:Signal.Low}">
+                                                <Setter Property="Source" Value="lowsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.VibrationSignal}" Value="{x:Static  viewmodels:Signal.Medium}">
+                                                <Setter Property="Source" Value="medsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.VibrationSignal}" Value="{x:Static  viewmodels:Signal.High}">
+                                                <Setter Property="Source" Value="highsignal48"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+
+                                </Grid>
+                            </StackLayout>
+
+                        </Frame>
+                        <Frame Grid.Column="0" Grid.Row="1"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+
+                            <StackLayout VerticalOptions="FillAndExpand">
+                                <FlexLayout JustifyContent="SpaceBetween" Margin="0,0,0,-15">
+                                    <Image Source="lock32" HorizontalOptions="Start"/>
+                                    <ActivityIndicator IsRunning="{Binding SelectedContainerViewModel.IsUpdatingSecurity}" Scale="0.5"/>
+                                </FlexLayout>
+                                
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Door" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center"/>
+                                    <Label Text="" Grid.Row="0" Grid.Column="1" HorizontalTextAlignment="End">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding SelectedContainerViewModel.DoorIsClosed}" Value="False">
+                                                <Setter Property="Text" Value="Open" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding SelectedContainerViewModel.DoorIsClosed}" Value="True">
+                                                <Setter Property="Text" Value="Closed" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <Label Text="Door Lock" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center"/>
+                                    <Switch Grid.Row="1" Grid.Column="1" VerticalOptions="CenterAndExpand" IsToggled="{Binding SelectedContainerViewModel.DoorIsLocked}"/>
+
+                                    <Label Text="Buzzer" Grid.Row="2" Grid.Column="0" VerticalTextAlignment="Center"/>
+                                    <Switch Grid.Row="2" Grid.Column="1" VerticalOptions="CenterAndExpand" IsToggled="{Binding SelectedContainerViewModel.BuzzerIsOn}"/>
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                        <Frame Grid.Column="1" Grid.Row="1"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.SoundPage}"/>
+                            </Frame.GestureRecognizers>
+                            <StackLayout>
+                                <Image Source="noise32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Noise level" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.NoiseLevel, TargetNullValue='N/A'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End"/>
+                                    <Image Source="nosignal48" Grid.Row="1" Grid.ColumnSpan="2">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.NoiseSignal}" Value="{x:Static  viewmodels:Signal.Low}">
+                                                <Setter Property="Source" Value="lowsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.NoiseSignal}" Value="{x:Static  viewmodels:Signal.Medium}">
+                                                <Setter Property="Source" Value="medsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.NoiseSignal}" Value="{x:Static  viewmodels:Signal.High}">
+                                                <Setter Property="Source" Value="highsignal48"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+
+                                </Grid>
+                            </StackLayout>
+
+                        </Frame>
+                        <Frame Grid.Column="0" Grid.Row="2"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChartsViewModel.LuminosityPage}"/>
+                            </Frame.GestureRecognizers>
+                            <StackLayout>
+                                <Image Source="light32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Luminosity" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.LuminosityLevel, TargetNullValue='N/A'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End"/>
+                                    <Image Source="nosignal48" Grid.Row="1" Grid.ColumnSpan="2">
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.LuminositySignal}" Value="{x:Static  viewmodels:Signal.Low}">
+                                                <Setter Property="Source" Value="lowsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.LuminositySignal}" Value="{x:Static  viewmodels:Signal.Medium}">
+                                                <Setter Property="Source" Value="medsignal48"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding SelectedContainerViewModel.LuminositySignal}" Value="{x:Static  viewmodels:Signal.High}">
+                                                <Setter Property="Source" Value="highsignal48"/>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+
+                                </Grid>
+                            </StackLayout>
+
+                        </Frame>
+                        <Frame Grid.Column="1" Grid.Row="2"  BorderColor="Black" CornerRadius="15" Padding="5, 10, 5, 10">
+
+                            <StackLayout>
+                                <Image Source="motion32" HorizontalOptions="Start"/>
+
+                                <Grid Padding="5" VerticalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="Motion" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="End"/>
+                                    <Label Text="{Binding SelectedContainerViewModel.MotionIsDetected, TargetNullValue='N/A'}" Grid.Row="0" Grid.Column="1" VerticalTextAlignment="End">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding SelectedContainerViewModel.MotionIsDetected}" Value="True">
+                                                <Setter Property="Text" Value="Motion Detected"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding SelectedContainerViewModel.MotionIsDetected}" Value="False">
+                                                <Setter Property="Text" Value="None Detected"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
+                            </StackLayout>
+
+                        </Frame>
+                    </Grid>
+                </StackLayout>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

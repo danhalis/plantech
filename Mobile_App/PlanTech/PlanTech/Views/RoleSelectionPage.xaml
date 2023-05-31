@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--This page is only for first stage's testing-->
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PlanTech.Views.RoleSelectionPage"
+             Shell.NavBarIsVisible="False">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+            <Label Text="Who are you?" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+            <Button Text="Fleet Manager" Clicked="OnFleetManagerButtonClicked"/>
+            <Button Text="Farm Technician" Clicked="OnFarmTechinicianButtonClicked"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
